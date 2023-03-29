@@ -5,28 +5,20 @@
 
     require_once('settings.php');
 
-    $allArr = [];
+    // $allArr = [];
 
-    $sql = "SELECT * FROM quotes";
-    $result = $conn->query($sql);
+    $sql_count = "SELECT COUNT(*) AS total FROM quotes";
+    $sql_total = $conn->query($sql_count);
+   
 
-    if ($result->num_rows > 0) {
-    // output data of each row
-        while($row = $result->fetch_assoc()) {
-
-            // No empty spaces for characters
-            $charArr = [];
-            if ($row["char2"] != "") {
-                $charArr = [$row["char"], $row["char2"]];
-            } else if ($row["char"] != "") {
-                $charArr = [$row["char"]];
-            }
-
-            array_push($allArr, ['id' => $row["id"], 'author' => $row["author"], 'work' => $row["work"], 'series' => $row["series"], 'quote' => $row["quote"], 'characters' => $charArr]);
-        }
+    if ($sql_total->num_rows > 0) {
+        while($row_total = $sql_total->fetch_assoc()) {
+            $total = $row_total['total'];
+            echo $total;
+        } 
     }
     $conn->close();
     // print_r($allArr);
-    echo json_encode($allArr, JSON_UNESCAPED_UNICODE);
+    // echo json_encode($allArr, JSON_UNESCAPED_UNICODE);
     
 ?>
