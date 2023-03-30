@@ -1,7 +1,11 @@
 Options -MultiViews
 Options +FollowSymLinks
 RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^([A-Za-z0-9-]+)$ $1.php [L]
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^([A-Za-z0-9-]+)/$ $1.php [L]
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^quote/([0-9]+)$ search-id.php?id=$1 [L]
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^quote/([0-9]+)/$ search-id.php?id=$1 [L]

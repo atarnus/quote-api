@@ -2,43 +2,30 @@
 
     header('Access-Control-Allow-Origin: *');
     header('Content-Type: application/json; charset=utf-8');
-
     require_once('settings.php');
+    require_once('function.php');
 
-    $quoteArr = [];
-    $additions = "";
+    $str = 'id';
+    $add = '';
+    $arr = [];
 
-    // Check the max id value
-    $sql_max = "SELECT MAX(id) AS max FROM quotes";
-    $result_max = $conn->query($sql_max);
+    // Get max ID
+    $max = intval(getMax($conn, $str));
 
-    if ($result_max->num_rows > 0) {
-        while($row_max = $result_max->fetch_assoc()) {
-            $max = $row_max['max'];
-        }
-    }
+    // Get total row count
+    $total = intval(getTotalRows($conn, $str));
 
     // Check if offset parameter exists and apply it if the value is smaller than the max id
-    if (isset($_GET['offset']) && ($_GET['offset']) < $max) {
-        $additions .= " WHERE id>".$_GET['offset'];
+    if (isset($_GET['offset']) && $_GET['offset'] < $max) {
+        $add .= " WHERE id>".$_GET['offset'];
     }
     // Check if limit parameter exists and apply it if the value is greater than 0
-    if (isset($_GET['limit']) && ($_GET['limit']) > 0) {
-        $additions .= " LIMIT ".$_GET['limit'];
-    }
-
-    // Get the total row count of the table
-    $sql_count = "SELECT COUNT(*) AS total FROM quotes";
-    $result_count = $conn->query($sql_count);
-   
-    if ($result_count->num_rows > 0) {
-        while($row_count = $result_count->fetch_assoc()) {
-            $total = $row_count['total'];
-        } 
+    if (isset($_GET['limit']) && $_GET['limit'] > 0) {
+        $add .= " LIMIT ".$_GET['limit'];
     }
 
     // Get the results
-    $sql = "SELECT * FROM quotes".$additions; 
+    $sql = "SELECT * FROM quotes".$add; 
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
@@ -53,16 +40,17 @@
                 $charArr = [$row["char"]];
             }
 
-            array_push($quoteArr, ['id' => intval($row["id"]), 'author' => $row["author"], 'work' => $row["work"], 'series' => $row["series"], 'quote' => $row["quote"], 'characters' => $charArr]);
+            array_push($arr, ['id' => intval($row["id"]), 'author' => $row["author"], 'work' => $row["work"], 'series' => $row["series"], 'quote' => $row["quote"], 'characters' => $charArr]);
         }
     }
 
-    $showing = $quoteArr[0]['id']." - ".$quoteArr[count($quoteArr)-1]['id'];
-    $allArr = ['total' => intval($total), 'showing ids' => $showing, 'results' => $quoteArr];
-
     $conn->close();
-    // print_r($allArr);
 
-    echo json_encode($allArr, JSON_UNESCAPED_UNICODE);
+    // Check the lowest and highest ID present on array
+    $showing = $arr[0]['id']." - ".$arr[count($arr)-1]['id'];
+
+    // Compile the printable array and encode to JSON
+    $finalArr = ['total' => intval($total), 'showing ids' => $showing, 'results' => $arr];
+    echo json_encode($finalArr, JSON_UNESCAPED_UNICODE);
     
 ?>
