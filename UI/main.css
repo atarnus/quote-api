@@ -48,7 +48,7 @@ body {
 }
 
 .max-width {
-    max-width: 950px;
+    max-width: 1200px;
 }
 
 .row {
@@ -89,6 +89,6 @@ td button {
     border: none;
 }
 
-td button:hover {
+tr.link:hover {
     color: #78638d;
 }
