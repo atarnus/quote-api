@@ -49,8 +49,10 @@
     // Check the lowest and highest ID present on array
     $showing = $arr[0]['id']." - ".$arr[count($arr)-1]['id'];
 
+
     // Compile the printable array and encode to JSON
     $finalArr = ['total' => intval($total), 'showing ids' => $showing, 'results' => $arr];
+    // print_r($finalArr);
     echo json_encode($finalArr, JSON_UNESCAPED_UNICODE);
     
 ?>

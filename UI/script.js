@@ -1,12 +1,24 @@
-// Function to empty all fields and backgrounds
-function clean() {
-    document.getElementById("headline").innerHTML = "";
-    document.getElementById("quote-list").innerHTML = "";
+// Server URL
+const PATH = "https://localhost/quote-api/";
+// Paging: results per page
+const PERPAGE = 3;
+
+// Cleaning functions
+function cleanBox() {
     document.getElementById("quote-text").innerHTML = "";
     document.getElementById("quote-work").innerHTML = "";
     document.getElementById("quote-chars").innerHTML = "";
+    document.getElementById("quote-close").innerHTML = "";
     // Remove background from quote box
     document.getElementById("quote-box").classList.remove("card");
+}
+
+function cleanList() {
+    document.getElementById("quote-list").innerHTML = "";
+}
+
+function cleanHeadline() {
+    document.getElementById("headline").innerHTML = "";
 }
 
 // Function to fetch data from API and transform it to JS
@@ -58,18 +70,18 @@ function characters(array) {
 
 // Get a random quote
 function randomQuote() {
-    singleQuote("https://geronimo.okol.org/~pohkat/quote-api/random");
+    singleQuote(PATH + "random");
 }
 
 // Get a quote by id
 function quoteById(id) {
-    let url = "https://geronimo.okol.org/~pohkat/quote-api/quote/" + id;
+    let url = PATH + "quote/" + id;
     singleQuote(url);
 }
 
 // Function to get a single quote
 async function singleQuote(url) {
-    clean();
+    cleanBox();
     let item = await getData(url);
     cardBox();
     let quote = quoteToCard(item.quote);
@@ -86,15 +98,24 @@ async function singleQuote(url) {
     document.getElementById("quote-text").innerHTML = quote;
     document.getElementById("quote-work").innerHTML = work + series;
     document.getElementById("quote-chars").innerHTML = chars;
+    document.getElementById("quote-close").innerHTML = "<button class=\"right close\"  onclick=\"cleanBox()\">x</button>";
 }
 
 // LISTINGS
 
 const TABLE = "<table><tr><th>ID</th><th>Quote</th><th>Author</th><th>Work</th><th>Series</th></tr>";
 
-async function listAllQuotes() {
-    clean();
-    let item = await getData("https://geronimo.okol.org/~pohkat/quote-api/quote");
+function setPage(int) { 
+    let offset = int * PERPAGE - PERPAGE;
+    let str = "quote?offset=" + offset + "&limit=" + PERPAGE;
+    listAllQuotes(int, str);
+}
+
+async function listAllQuotes(int, str) {
+    cleanList();
+    let url = PATH + str;
+    let item = await getData(url);
+    console.log(item);
     let array = item.results;
     let list = "";
     let series;
@@ -112,5 +133,20 @@ async function listAllQuotes() {
         list += "<tr class=\"link\" onclick=\"quoteById(" + obj.id + ")\"><td>" + obj.id + "</td><td>" + lineToSpace(truncate(obj.quote, 75)) + "</td><td>" + obj.author + "</td><td>" + obj.work + "</td><td>" + series + "</td></tr>";
     }
 
-    document.getElementById("quote-list").innerHTML = TABLE + list + "</table>";
+    // BUTTONS
+
+    let buttons;
+    let pages = Math.ceil(item.total / PERPAGE);
+    let previous = int - 1;
+    let next = int + 1;
+
+    if (int == 1) {
+        buttons = "<p class=\"center\"><button onclick=\"setPage(2)\" type=\"button\">Next</button></p>"
+    } else if (int == pages) {
+        buttons = "<p class=\"center\"><button onclick=\"setPage(" + previous + ")\" type=\"button\">Previous</button></p>"
+    } else {
+        buttons = "<p class=\"center\"><button onclick=\"setPage(" + previous + ")\" type=\"button\">Previous</button> <button onclick=\"setPage(" + next + ")\" type=\"button\">Next</button></p>"
+    }
+
+    document.getElementById("quote-list").innerHTML = TABLE + list + "</table>" + buttons;
 }

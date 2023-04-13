@@ -1,10 +1,11 @@
 :root {
-    --font: #0A0B08;
-    --link: #453B4F;
+    --font: #242F40;
+    --font2: #58749D;
+    --link: #8D3AA1;
     --navtext: #E5F3EA;
-    --bg: #A4D4B4;
-    --nav: #45503B;
-    --box: #BFE1CA;
+    --bg: #E5E5E5;
+    --nav: #A23B72;
+    --box: #CCA43B;
 }
 
 a {
@@ -32,6 +33,7 @@ a {
 .center {
     align-items: center;
     text-align: center;
+    float: center;
     
 }
 
@@ -72,13 +74,19 @@ body {
 .card-text {
     text-indent: 15px;
     margin: 5px;
+    font-size: 20px;
 }
 
 .card-subtitle {
     font-style: italic;
+    color: var(--font2);
 }
 
 /* TABLES */
+
+table {
+    margin-bottom: 20px;
+}
 
 th, td {
     padding: 0 5px;
@@ -90,5 +98,18 @@ td button {
 }
 
 tr.link:hover {
-    color: #78638d;
+    color: var(--link);
+}
+
+button {
+    width: 120px;
+    border-radius: 5px;
+}
+
+.close {
+    width: 25px;
+    height: 25px;
+    line-height: 15px;
+    text-align: center;
+    font-size: 15px;
 }
