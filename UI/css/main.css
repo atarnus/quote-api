@@ -15,7 +15,8 @@ a {
 
 .navbar a {
     color: var(--bg);
-    font-style: italic;
+    padding: 0 5px;
+    margin: 0 10px;
 }
 
 .navbar {
@@ -37,6 +38,19 @@ a {
     
 }
 
+/* form {
+    width: 800px;
+} */
+
+label {
+    float: right;
+}
+
+h2 {
+    text-align: center;
+    margin: 1rem;
+}
+
 /* BODY & DIVS */
 
 body {
@@ -49,13 +63,25 @@ body {
 
 }
 
-.max-width {
+.max-width-1200 {
     max-width: 1200px;
+}
+
+.max-width-600 {
+    max-width: 600px;
 }
 
 .row {
     margin: auto;
 }
+
+.col-20 {width: 20%;}
+.col-25 {width: 25%;}
+.col-40 {width: 40%;}
+.col-50 {width: 50%;}
+.col-60 {width: 60%;}
+.col-75 {width: 75%;}
+.col-75 {width: 80%;}
 
 .green {
     background:#069206;

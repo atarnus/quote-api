@@ -33,7 +33,7 @@ CREATE TABLE `quotes` (
   `work` varchar(255) DEFAULT NULL,
   `series` varchar(255) DEFAULT NULL,
   `quote` varchar(1000) NOT NULL,
-  `char` varchar(255) NOT NULL,
+  `char1` varchar(255) NOT NULL,
   `char2` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -41,7 +41,7 @@ CREATE TABLE `quotes` (
 -- Vedos taulusta `quotes`
 --
 
-INSERT INTO `quotes` (`id`, `author`, `work`, `series`, `quote`, `char`, `char2`) VALUES
+INSERT INTO `quotes` (`id`, `author`, `work`, `series`, `quote`, `char1`, `char2`) VALUES
 (1, 'Josh Lanyon', 'The Hell You Say', 'The Adrien English Mysteries', 'A pause followed my greeting. Then “We’re watching you” whispered the voice on the other end.\r\n“Yeah? Did you see what I did with my keys?”\r\nSilence. Then dial tone.\r\nThese younger demons. So easily discouraged.', 'Adrien English', ''),
 (2, 'Josh Lanyon', 'Death of a Pirate King', 'The Adrien English Mysteries', 'I thought again how odd it was to be on formal terms with someone you had once permitted to lick your ears.', 'Adrien English', ''),
 (3, 'Jordan L. Hawk', 'Widdershins', 'Whyborne & Griffin', '“I will not surrender my profession simply because men throughout history have been unduly enamored of their penises!”', 'Dr. Christine Putnam', ''),

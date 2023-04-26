@@ -14,9 +14,9 @@
             // No empty spaces for characters
             $charArr = [];
             if ($row["char2"] != "") {
-                $charArr = [$row["char"], $row["char2"]];
-            } else if ($row["char"] != "") {
-                $charArr = [$row["char"]];
+                $charArr = [$row["char1"], $row["char2"]];
+            } else if ($row["char1"] != "") {
+                $charArr = [$row["char1"]];
             }
 
             $arr = ['id' => intval($row["id"]), 'author' => $row["author"], 'work' => $row["work"], 'series' => $row["series"], 'quote' => $row["quote"], 'characters' => $charArr];
