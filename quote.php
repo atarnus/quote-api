@@ -36,11 +36,15 @@
             $charArr = [];
             if ($row["char2"] != "") {
                 $charArr = [$row["char1"], $row["char2"]];
+                $char = $charArr;
             } else if ($row["char1"] != "") {
                 $charArr = [$row["char1"]];
+                $char = $charArr;
+            } else {
+                $char = $row["char1"];
             }
 
-            array_push($arr, ['id' => intval($row["id"]), 'author' => $row["author"], 'work' => $row["work"], 'series' => $row["series"], 'quote' => $row["quote"], 'characters' => $charArr]);
+            array_push($arr, ['id' => intval($row["id"]), 'author' => $row["author"], 'work' => $row["work"], 'series' => $row["series"], 'quote' => $row["quote"], 'characters' => $char]);
         }
     }
 
