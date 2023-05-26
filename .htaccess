@@ -9,3 +9,4 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^quote/([0-9]+)$ search-id.php?id=$1 [L]
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^quote/([0-9]+)/$ search-id.php?id=$1 [L]
+

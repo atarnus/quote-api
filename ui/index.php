@@ -1,5 +1,5 @@
 <?php
-    $title = 'Add a Quote';
+    $title = 'Quotes from Gay Romance Novels';
 	// require_once('auth.php');
     require_once('header.php');
     include_once('nav.php');

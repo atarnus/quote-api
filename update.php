@@ -33,35 +33,28 @@
     $char1 = clean($conn, $data['char1']);
     $char2 = clean($conn, $data['char2']);
     $quote = clean($conn, $data['quote']);
+    $id = clean($conn, $data['id']);
 
 // BUILD SQL QUERY
 
-    // Optional insert to SQL query
-    function check($str) {
-        if ($str != "") {
-            return ",".$str;
-        } else {
-            return $str;
-        }
-    }
-
     // Optional value to SQL query
-    function pick($str) {
-        if ($str != "") {
-            return ",'".$str."'";
+    function check($col, $val) {
+        if ($val != "") {
+            return ", $col = '$val'";
         } else {
-            return $str;
+            return ", $col = NULL";
         }
     }
 
-    // Check if optional values are present and add them to SQL query
-    $inserts = check($series).check($char1).check($char2);
-    $values = pick($series).pick($char1).pick($char2);
+    // Check if optional values are null
+    $c_series = check('series', $series);
+    $c_char1 = check('char1', $char1);
+    $c_char2 = check('char2', $char2);
 
     // Create INSERT query
-    $sql = "INSERT INTO quotes(author, work, quote".$inserts.") VALUES('".$author."','".$work."','".$quote."'".$values.")";
+    $sql = "UPDATE quotes SET author = '$author', work = '$work', quote = '$quote'".$c_series.$c_char1.$c_char2." WHERE id='$id'";
     $result = $conn->query($sql);
-    
+
     //Check whether the query was successful or not
     if($result) {
         echo json_encode('Success');

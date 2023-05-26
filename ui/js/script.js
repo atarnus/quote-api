@@ -97,7 +97,7 @@ async function singleQuote(url) {
     document.getElementById("quote-text").innerHTML = quote;
     document.getElementById("quote-work").innerHTML = work + series;
     document.getElementById("quote-chars").innerHTML = chars;
-    document.getElementById("quote-close").innerHTML = "<button class=\"right close\"  onclick=\"cleanBox()\">x</button>";
+    document.getElementById("quote-close").innerHTML = " <button class=\"right close\" onclick=\"cleanBox()\"></button> <a href='edit.php?id=" + item.id + "'><button class=\"right edit\"></button></a>";
 }
 
 // LISTINGS
@@ -152,7 +152,11 @@ async function listAllQuotes(int, str) {
 
 // ADMIN
 
-function insertQuote() {
+function logQuote(str) {
+
+    let url = window.location.href;
+    let urlArr = url.split("?id=");
+    let id = urlArr[1];
 
     let data = {
         'author' : document.getElementById("author").value,
@@ -160,11 +164,12 @@ function insertQuote() {
         'series' : document.getElementById("series").value,
         'char1' : document.getElementById("char1").value,
         'char2' : document.getElementById("char2").value,
-        'quote' : document.getElementById("quote").value
+        'quote' : document.getElementById("quote").value,
+        'id' : id
     }
 
     console.log(data);
-    postJSON(data);
+    postJSON(str, data);
 
     // fetch('http://localhost/quote-api/insert.php', {
     //     method: "POST",
@@ -180,9 +185,17 @@ function insertQuote() {
     //     exit();
 }
 
-async function postJSON(data) {
+async function postJSON(str, data) {
+    let url;
+    if (str == "add") {
+        url = PATH + "insert.php";
+    } else if (str == "edit") {
+        url = PATH + "update.php";
+    }
+    console.log(url);
+
     try {
-      const response = await fetch('https://localhost/quote-api/insert.php', {
+      const response = await fetch(url, {
         method: "POST",
         // mode: "same-origin",
         // credentials: "same-origin",
@@ -198,7 +211,7 @@ async function postJSON(data) {
       console.log("Success:", result);
       if (result == 'Success') {
         console.log('desmi');
-        location.href = 'success.html';
+        location.href = 'success.php';
       }
     } catch (error) {
       console.error("Error:", error);
@@ -209,11 +222,38 @@ async function postJSON(data) {
 async function editForm(id) {
     let url = PATH + "quote/" + id;
     let item = await getData(url);
+
     document.getElementById("author").value = item.author;
     document.getElementById("work").value = item.work;
-    document.getElementById("series").value = item.series;
-    // document.getElementById("char1").value = 
-    // document.getElementById("char2").value =
     document.getElementById("quote").value = item.quote;
+    if (item.series != null) {
+        document.getElementById("series").value = item.series;
+    }
+    if (item.characters[0] != null) {
+        document.getElementById("char1").value = item.characters[0];
+    }
+    if (item.characters[1] != null) {
+        document.getElementById("char2").value = item.characters[1]; 
+    }
+}
+
+// Validate Form
+function validateForm(str) {
+    let author = document.forms["adminQuote"]["author"].value.trim();
+    let work = document.forms["adminQuote"]["work"].value.trim();
+    let quote = document.forms["adminQuote"]["quote"].value.trim();
+
+    if (author == "") {
+        alert("Fill in the author.");
+        return false;
+    } else if (work == "") {
+        alert("Fill in the title of the book.");
+        return false;
+    } else if (quote == "") {
+        alert("Fill in the quote.");
+        return false;
+    } else {
+        logQuote(str);
+    }
 }
   
