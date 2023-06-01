@@ -3,7 +3,7 @@ const PATH = "https://localhost/quote-api/";
 // Paging: results per page
 const PERPAGE = 3;
 
-// Cleaning functions
+// CLEANING FUNCTIONS
 function cleanBox() {
     document.getElementById("quote-text").innerHTML = "";
     document.getElementById("quote-work").innerHTML = "";
@@ -19,6 +19,10 @@ function cleanList() {
 
 function cleanHeadline() {
     document.getElementById("headline").innerHTML = "";
+}
+
+function clearSearch() {
+    document.getElementById("searchfield").value = "";
 }
 
 // Function to fetch data from API and transform it to JS
@@ -100,6 +104,74 @@ async function singleQuote(url) {
     document.getElementById("quote-close").innerHTML = " <button class=\"right close\" onclick=\"cleanBox()\"></button> <a href='edit.php?id=" + item.id + "'><button class=\"right edit\"></button></a>";
 }
 
+// SEARCHES
+
+
+function createList(obj) {
+    // Clear null if no series exist
+    if (obj.series) {
+        series = obj.series;
+    } else {
+        series = "";
+    }
+    return "<tr class=\"link\" onclick=\"quoteById(" + obj.id + ")\"><td>" + obj.id + "</td><td>" + lineToSpace(truncate(obj.quote, 75)) + "</td><td>" + obj.author + "</td><td>" + obj.work + "</td><td>" + series + "</td></tr>";
+}
+
+async function search() {
+    cleanList();
+    let search = document.getElementById("searchField").value.toLowerCase();
+    let filter = document.getElementById("searchFilter").value;
+    let url = PATH + "quote";
+    let item = await getData(url);
+    console.log(item);
+    let array = item.results;
+    let list = "";
+    let results = 0;
+
+    for (const x in array) {
+        let obj = array[x];
+
+        switch(filter) {
+            case "author":
+                if (obj.author.toLowerCase().includes(search)) {
+                    list += createList(obj);
+                    results ++;
+                }
+                break;
+            case "work":
+                if (obj.work.toLowerCase().includes(search)) {
+                    list += createList(obj);
+                    results ++;
+                }
+                break;
+            case "series":
+                if (obj.series && obj.series.toLowerCase().includes(search)) {
+                    list += createList(obj);
+                    results ++;
+                }
+                break;
+            case "quote":
+                if (obj.quote.toLowerCase().includes(search)) {
+                    list += createList(obj);
+                    results ++;
+                }
+                break;
+            case "all":
+                if (obj.author.toLowerCase().includes(search) || obj.work.toLowerCase().includes(search) || obj.series && obj.series.toLowerCase().includes(search) || obj.quote.toLowerCase().includes(search)) {
+                    list += createList(obj);
+                    results ++;
+                }
+                break;
+        }
+    }
+    if (list != "") {
+        document.getElementById("quote-list").innerHTML = "Results: " + results + "<br>" + TABLE + list + "</table>";
+    } else {
+        document.getElementById("quote-list").innerHTML = "No results.";
+    }
+}
+
+
 // LISTINGS
 
 const TABLE = "<table><tr><th>ID</th><th>Quote</th><th>Author</th><th>Work</th><th>Series</th></tr>";
@@ -117,19 +189,10 @@ async function listAllQuotes(int, str) {
     console.log(item);
     let array = item.results;
     let list = "";
-    let series;
 
     for (const x in array) {
         let obj = array[x];
-
-        // Clear null if no series exist
-        if (obj.series) {
-            series = obj.series;
-        } else {
-            series = "";
-        }
-
-        list += "<tr class=\"link\" onclick=\"quoteById(" + obj.id + ")\"><td>" + obj.id + "</td><td>" + lineToSpace(truncate(obj.quote, 75)) + "</td><td>" + obj.author + "</td><td>" + obj.work + "</td><td>" + series + "</td></tr>";
+        list += createList(obj);
     }
 
     // BUTTONS
