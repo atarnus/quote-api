@@ -5,8 +5,9 @@
     require_once('settings.php');
     require_once('function.php');
 
+    $search = '';
     $str = 'series';
-    $total = intval(getTotalRows($conn, $str));
+    $total = intval(getTotalRows($conn, $str, $search));
     $add = '';
 
     // Check if limit parameter exists and apply if the value is greater than 0

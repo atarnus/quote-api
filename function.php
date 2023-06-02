@@ -13,9 +13,9 @@ function getMax($conn, $str) {
 }
 
 // Get the total row count of distinct rows
-function getTotalRows($conn, $str) {
-    $sql = "SELECT COUNT(DISTINCT ".$str.") AS total FROM quotes";
-
+function getTotalRows($conn, $str, $search) {
+    $sql = "SELECT COUNT(DISTINCT ".$str.") AS total FROM quotes".$search;
+    // echo $sql;
     $result = $conn->query($sql);
     
     if ($result->num_rows > 0) {
@@ -40,5 +40,4 @@ function listArray($conn, $str, $add) {
     }
     return $arr;
 }
-
 ?>
