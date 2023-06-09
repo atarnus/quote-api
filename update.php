@@ -21,7 +21,6 @@
 	function clean($conn, $str) {
         $str = trim($str);
         $str = stripslashes($str);
-        $str = htmlspecialchars($str);
         $str = mysqli_real_escape_string($conn, $str);
         return $str;
     }

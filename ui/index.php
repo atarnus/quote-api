@@ -40,7 +40,7 @@
 
     <!-- Quote list -->
     <div class="row">
-        <div id="quote-list" class="col justify-content-left mt-5">
+        <div id="quote-list" class="col justify-content-center mt-5">
             <!-- <p id="quote-list"></p> -->
         </div>
     </div>

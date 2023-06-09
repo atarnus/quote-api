@@ -21,7 +21,7 @@
     } else if (isset($_GET['char'])) {
         $search = " WHERE (char1 LIKE '%".mysqli_real_escape_string($conn, $_GET['char'])."%' OR char2 LIKE '%".mysqli_real_escape_string($conn, $_GET['char'])."%')";
     } else if (isset($_GET['search'])) {
-        $search = " WHERE concat(author,' ',work,' ',series,' ',char1,' ',char2,' ',quote) LIKE '%".mysqli_real_escape_string($conn, $_GET['search'])."%'";
+        $search = " WHERE concat_ws(author,' ',work,' ',series,' ',char1,' ',char2,' ',quote) LIKE '%".mysqli_real_escape_string($conn, $_GET['search'])."%'";
     }
 
     // Get max ID

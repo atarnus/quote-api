@@ -28,7 +28,7 @@ function getTotalRows($conn, $str, $search) {
 // Create a list array
 function listArray($conn, $str, $add) {
     $arr = [];
-    $sql = "SELECT DISTINCT ".$str." FROM quotes ORDER BY ".$str.$add;
+    $sql = "SELECT DISTINCT ".$str." FROM quotes WHERE ".$str." IS NOT NULL ORDER BY ".$str.$add;
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {

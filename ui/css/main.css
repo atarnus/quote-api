@@ -38,7 +38,6 @@ a {
     align-items: center;
     text-align: center;
     float: center;
-    text-align: center;
 }
 
 label {
@@ -48,6 +47,7 @@ label {
 h3 {
     font-style: italic;
     font-size: 22px;
+    text-align: center;
 }
 
 h2 {
@@ -105,12 +105,23 @@ body {
 
 /* TABLES */
 
+.noborder {
+    border: none;
+}
+
 table {
     margin-bottom: 20px;
+    min-width: 275px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 th, td {
     padding: 0 5px;
+}
+
+tr {
+    border: 1px solid var(--button3);
 }
 
 td button {
@@ -118,8 +129,9 @@ td button {
     border: none;
 }
 
-tr.link:hover {
+tr.link:hover, td.link:hover {
     color: var(--link);
+    background-color: var(--button);
 }
 
 /* BUTTONS & INPUT */

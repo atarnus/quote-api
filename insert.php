@@ -1,7 +1,7 @@
 <?php
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Headers: *');
-    // header('Content-Type: application/json; charset=utf-8');
+    header('Content-Type: application/json; charset=utf-8');
     require_once('settings.php');
 
 // COLLECT AND CLEAN DATA

@@ -22,7 +22,7 @@ function cleanHeadline() {
 }
 
 function clearSearch() {
-    document.getElementById("searchfield").value = "";
+    document.getElementById("searchField").value = "";
 }
 
 // Function to fetch data from API and transform it to JS
@@ -104,87 +104,56 @@ async function singleQuote(url) {
     document.getElementById("quote-close").innerHTML = " <button class=\"right close\" onclick=\"cleanBox()\"></button> <a href='edit.php?id=" + item.id + "'><button class=\"right edit\"></button></a>";
 }
 
-// SEARCHES
+// LISTINGS
 
+function search(filter, search) {
+    cleanList();
 
-function createList(obj) {
+    if (search == "" && filter !== "search" && filter !=="quote") {
+        console.log("no search + filter");
+        setPageFilter(1, filter);
+    } else {
+        setPage(1, filter, search.toLowerCase());
+    }
+}
+
+// Set Page for Quote results
+function setPage(int, filter, search) {
+    let offset = int * PERPAGE - PERPAGE;
+    let param = "offset=" + offset + "&limit=" + PERPAGE;
+    listQuotes(int, param, search, filter);
+}
+
+// Set Page for List by filter
+function setPageFilter(int, filter) {
+    let offset = int * PERPAGE - PERPAGE;
+    let param = "offset=" + offset + "&limit=" + PERPAGE;
+    listFilter(int, param, filter);
+}
+
+// Create row for result
+function createRowQuote(obj) {
     // Clear null if no series exist
     if (obj.series) {
         series = obj.series;
     } else {
         series = "";
     }
-    return "<tr class=\"link\" onclick=\"quoteById(" + obj.id + ")\"><td>" + obj.id + "</td><td>" + lineToSpace(truncate(obj.quote, 75)) + "</td><td>" + obj.author + "</td><td>" + obj.work + "</td><td>" + series + "</td></tr>";
-}
-
-async function search() {
-    cleanList();
-    let search = document.getElementById("searchField").value.toLowerCase();
-    let filter = document.getElementById("searchFilter").value;
-    let url = PATH + "quote";
-    let item = await getData(url);
-    console.log(item);
-    let array = item.results;
-    let list = "";
-    let results = 0;
-
-    for (const x in array) {
-        let obj = array[x];
-
-        switch(filter) {
-            case "author":
-                if (obj.author.toLowerCase().includes(search)) {
-                    list += createList(obj);
-                    results ++;
-                }
-                break;
-            case "work":
-                if (obj.work.toLowerCase().includes(search)) {
-                    list += createList(obj);
-                    results ++;
-                }
-                break;
-            case "series":
-                if (obj.series && obj.series.toLowerCase().includes(search)) {
-                    list += createList(obj);
-                    results ++;
-                }
-                break;
-            case "quote":
-                if (obj.quote.toLowerCase().includes(search)) {
-                    list += createList(obj);
-                    results ++;
-                }
-                break;
-            case "all":
-                if (obj.author.toLowerCase().includes(search) || obj.work.toLowerCase().includes(search) || obj.series && obj.series.toLowerCase().includes(search) || obj.quote.toLowerCase().includes(search)) {
-                    list += createList(obj);
-                    results ++;
-                }
-                break;
+    let chars = "";
+    if (obj.characters) {
+        if (obj.characters[0]) {
+            chars += obj.characters[0];
+        }
+        if (obj.characters[1]) {
+            chars += ", " + obj.characters[1]; 
         }
     }
-    if (list != "") {
-        document.getElementById("quote-list").innerHTML = "Results: " + results + "<br>" + TABLE + list + "</table>";
-    } else {
-        document.getElementById("quote-list").innerHTML = "No results.";
-    }
+    return "<tr class=\"align-baseline link\" onclick=\"quoteById(" + obj.id + ")\"><td>" + obj.id + "</td><td>" + lineToSpace(truncate(obj.quote, 120)) + "</td><td>" + obj.author + "</td><td>" + obj.work + "</td><td>" + series + "</td><td>" + chars + "</td></tr>";
 }
 
-
-// LISTINGS
-
-const TABLE = "<table><tr><th>ID</th><th>Quote</th><th>Author</th><th>Work</th><th>Series</th></tr>";
-
-function setPage(int) {
-    let offset = int * PERPAGE - PERPAGE;
-    let str = "quote?offset=" + offset + "&limit=" + PERPAGE;
-    listAllQuotes(int, str);
-}
-
-async function listAllQuotes(int, str) {
+async function listFilter(int, param, filter) {
     cleanList();
-    let url = PATH + str;
+    let url = PATH + filter + "?" + param;
     let item = await getData(url);
     console.log(item);
     let array = item.results;
@@ -192,7 +161,56 @@ async function listAllQuotes(int, str) {
 
     for (const x in array) {
         let obj = array[x];
-        list += createList(obj);
+        if (obj != null) {
+            list += "<tr class=\"align-baseline\"><td class=\"link\" onclick=\"setSearch('" + obj + "' ,'" + filter + "')\">" + obj + "</td></tr>";
+        }
+    }
+
+    // TITLE
+    let title;
+    if (filter == "series") {
+        title = "Series";
+    } else if (filter == "char") {
+        title = "Characters";
+    } else {
+        title = filter.charAt(0).toUpperCase() + filter.slice(1) + "s";
+    }
+    let titlerow = "<h3>List of " + title.charAt(0).toUpperCase() + title.slice(1) + "</h3>"
+
+    // BUTTONS
+    let buttons;
+    let pages = Math.ceil(item.total / PERPAGE);
+    let previous = int - 1;
+    let next = int + 1;
+
+    if (int == 1) {
+        buttons = "<p class=\"center\"><button onclick=\"setPageFilter(2,'" + filter + "')\" type=\"button\">Next</button></p>"
+    } else if (int == pages) {
+        buttons = "<p class=\"center\"><button onclick=\"setPageFilter(" + previous + ",'" + filter + "')\" type=\"button\">Previous</button></p>"
+    } else {
+        buttons = "<p class=\"center\"><button onclick=\"setPageFilter(" + previous + ",'" + filter + "')\" type=\"button\">Previous</button> <button onclick=\"setPageFilter(" + next + ", '" + filter + "')\" type=\"button\">Next</button></p>"
+    }
+
+    let table = "<table><tr class=\"noborder\"><td colspan=\"3\">Results: " + item.total + "</td></tr>";
+    content = titlerow + table + list + "</table>" + buttons;
+    document.getElementById("quote-list").innerHTML = content;
+}
+
+async function listQuotes(int, param, search, filter) {
+    cleanList();
+    let url = PATH + "quote?" + param;
+    if (search !== "") {
+        url += "&" + filter + "=" + search;
+    }
+
+    console.log(url);
+    let item = await getData(url);
+    let array = item.results;
+    let list = "";
+
+    for (const x in array) {
+        let obj = array[x];
+        list += createRowQuote(obj);
     }
 
     // BUTTONS
@@ -203,18 +221,37 @@ async function listAllQuotes(int, str) {
     let next = int + 1;
 
     if (int == 1) {
-        buttons = "<p class=\"center\"><button onclick=\"setPage(2)\" type=\"button\">Next</button></p>"
+        buttons = "<p class=\"center\"><button onclick=\"setPage(2,'" + filter + "', '" + search + "')\" type=\"button\">Next</button></p>"
     } else if (int == pages) {
-        buttons = "<p class=\"center\"><button onclick=\"setPage(" + previous + ")\" type=\"button\">Previous</button></p>"
+        buttons = "<p class=\"center\"><button onclick=\"setPage(" + previous + ",'" + filter + "', '" + search + "')\" type=\"button\">Previous</button></p>"
     } else {
-        buttons = "<p class=\"center\"><button onclick=\"setPage(" + previous + ")\" type=\"button\">Previous</button> <button onclick=\"setPage(" + next + ")\" type=\"button\">Next</button></p>"
+        buttons = "<p class=\"center\"><button onclick=\"setPage(" + previous + ",'" + filter + "', '" + search + "')\" type=\"button\">Previous</button> <button onclick=\"setPage(" + next + ", '" + filter + "', '" + search + "')\" type=\"button\">Next</button></p>"
     }
 
-    document.getElementById("quote-list").innerHTML = TABLE + list + "</table>" + buttons;
+    if (search == "" && filter == "search" || search == "" && filter == "quote") {
+        title = "<h3>All Quotes</h3>";
+    } else {
+        if (filter == "work") {
+            title = "<h3>Quotes with '" + search + "' in title</h3>";
+        } else {
+            title = "<h3>Quotes with '" + search + "' in " + filter + "</h3>";
+        }
+    }
+
+    let content;
+    let table;
+    if (list == "") {
+        content = title + "<table><tr class=\"noborder\"><td>No results.</td></tr></table>";
+    } else {
+        table = "<table><tr class=\"noborder\"><td colspan=\"3\">Results: " + item.total + "</td></tr><tr><th>ID</th><th>Quote</th><th>Author</th><th>Work</th><th>Series</th></tr>";
+        content = title + table + list + "</table>" + buttons;
+    }
+    document.getElementById("quote-list").innerHTML = content;
 }
 
 // ADMIN
 
+// Add or Edit
 function logQuote(str) {
 
     let url = window.location.href;
@@ -231,23 +268,12 @@ function logQuote(str) {
         'id' : id
     }
 
-    console.log(data);
     postJSON(str, data);
-
-    // fetch('http://localhost/quote-api/insert.php', {
-    //     method: "POST",
-    //     body: JSON.stringify(data),
-    //     headers: {"Content-type": "application/json; charset=UTF-8"}
-    //   })
-
-
-    //   .then(response => response.json())
-    //   .then(json => console.log(json))
-    //   .catch(err => console.log(err));
-    
-    //     exit();
 }
 
+// Delete?
+
+// Post data to API
 async function postJSON(str, data) {
     let url;
     if (str == "add") {
@@ -256,6 +282,7 @@ async function postJSON(str, data) {
         url = PATH + "update.php";
     }
     console.log(url);
+    console.log(data);
 
     try {
       const response = await fetch(url, {

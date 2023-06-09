@@ -10,18 +10,19 @@
                     <a href="index.php"><button><img src="svg/caret-left-fill.svg"> Back</button></a>
                 <?php } else { ?>
                     <select type="button" name="searchFilter" id="searchFilter">
-                        <option value="all">All</option>
+                        <option value="search">All</option>
                         <option value="quote">Quote</option>
                         <option value="author">Author</option>
                         <option value="work">Title</option>
                         <option value="series">Series</option>
+                        <option value="char">Characters</option>
                     </select>
-                    <input onkeydown="if (event.key == 'Enter'){search()}else{}" id="searchField" type="text">
+                    <input onkeydown="if (event.key == 'Enter'){search(searchFilter.value, searchField.value)}else{}" id="searchField" type="text">
                     <button type="button" class="close" onclick="clearSearch()">x</button>
-                    <button onclick="search()" type="button">Search</button> 
+                    <button onclick="search(searchFilter.value, searchField.value)" type="button">Search</button> 
                     &nbsp;&nbsp;&nbsp;
                     <button onclick="randomQuote()" type="button">Random</button> 
-                    <button onclick="setPage(1)" type="button">List All</button> 
+                    <button onclick="search(searchFilter.value, '')" type="button">List All</button> 
                     <!-- <input onkeydown="if (event.key == 'Enter'){search()}else{}" id="searchfield" type="text">
                     <button onclick="search()" type="button">Search</button> 
                     &nbsp;&nbsp;&nbsp;<button onclick="clearSearch()" type="button">Clear</button> -->
