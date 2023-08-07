@@ -2,6 +2,7 @@
     --font: #242F40;
     --font2: #58749D;
     --link: #8D3AA1;
+    --link2: #BD48AB;
     --navtext: #E5F3EA;
     --bg: #E5E5E5;
     --nav: #A23B72;
@@ -89,7 +90,7 @@ body {
 /* QUOTE CARD */
 
 #quote-box {
-    max-width: 550px;
+    max-width: 600px;
 }
 
 .card-text {
@@ -100,7 +101,7 @@ body {
 
 .card-subtitle {
     font-style: italic;
-    color: var(--font2);
+    color: var(--link);
 }
 
 /* TABLES */
@@ -144,6 +145,25 @@ button, select {
     padding-left: 10px;
 }
 
+button.link, button.link:hover {
+    font-style: italic;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    width: auto;
+    height: auto;
+    background-color: transparent;
+    padding: 0px;
+}
+
+button.link {
+    color: var(--link);
+}
+
+button.link:hover {
+    color: var(--link2);
+}
+
 button:hover, select:hover {
     background-color: var(--button2);
 }
@@ -165,6 +185,13 @@ button:active {
 
 .edit {
     background-image: url("../svg/pencil-fill.svg")
+}
+
+.delete {
+    margin-top: 30px;
+    color: var(--nav);
+    background-color: var(--button3);
+    width: 40%;
 }
 
 input {

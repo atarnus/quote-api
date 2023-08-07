@@ -6,7 +6,7 @@
 ?>
 
     <div class="container fluid max-width-600 justify-content-center">
-        <div><h2>Edit a quote in database</h2></div>
+        <div><h2 class="center">Edit a quote in database</h2></div>
 
         <form id="addQuote" name="adminQuote">
             <div class="row">
@@ -66,6 +66,14 @@
             <div class="col-15">&nbsp;</div>
             <div class="col">
                 <button onclick="validateForm('edit')" class="form-control" name="submit">Submit</button>
+            </div>
+            <div class="col-15"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-15">&nbsp;</div>
+            <div class="col">
+                <button onclick="deleteQuote()" class="form-control delete" name="delete">Delete Quote</button>
             </div>
             <div class="col-15"></div>
         </div>

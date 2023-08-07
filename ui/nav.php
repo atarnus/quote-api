@@ -17,12 +17,12 @@
                         <option value="series">Series</option>
                         <option value="char">Characters</option>
                     </select>
-                    <input onkeydown="if (event.key == 'Enter'){search(searchFilter.value, searchField.value)}else{}" id="searchField" type="text">
+                    <input onkeydown="if (event.key == 'Enter'){searchFunction(searchFilter.value, searchField.value)}else{}" id="searchField" type="text">
                     <button type="button" class="close" onclick="clearSearch()">x</button>
-                    <button onclick="search(searchFilter.value, searchField.value)" type="button">Search</button> 
+                    <button onclick="searchFunction(searchFilter.value, searchField.value)" type="button">Search</button> 
                     &nbsp;&nbsp;&nbsp;
                     <button onclick="randomQuote()" type="button">Random</button> 
-                    <button onclick="search(searchFilter.value, '')" type="button">List All</button> 
+                    <button onclick="searchFunction(searchFilter.value, '')" type="button">List All</button> 
                     <!-- <input onkeydown="if (event.key == 'Enter'){search()}else{}" id="searchfield" type="text">
                     <button onclick="search()" type="button">Search</button> 
                     &nbsp;&nbsp;&nbsp;<button onclick="clearSearch()" type="button">Clear</button> -->

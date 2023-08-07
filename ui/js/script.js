@@ -23,6 +23,7 @@ function cleanHeadline() {
 
 function clearSearch() {
     document.getElementById("searchField").value = "";
+    document.getElementById("searchFilter").value = "search";
 }
 
 // Function to fetch data from API and transform it to JS
@@ -66,9 +67,14 @@ function characters(array) {
     let str = "";
     for (const x in array) {
         let obj = array[x];
-        str += "-" + obj + "<br>";
+        str += "- " + searchButton("char", obj) + "<br>";
     }
-    return '<p class="card-subtitle">' + str + '</p>';
+    return "<p class='card-subtitle'>" + str + "</p>";
+}
+
+// Function to create a search link
+function searchButton (filter, str) {
+    return '<button class="link" value="' + str + '" onclick="setSearch(\'' + filter + '\', this.value)">' + str + '</button>';
 }
 
 // Get a random quote
@@ -88,25 +94,37 @@ async function singleQuote(url) {
     let item = await getData(url);
     cardBox();
     let quote = quoteToCard(item.quote);
-    let work = '<p class="card-subtitle">' + item.work + ' by ' + item.author + '</p>';
+    let work = "<p class='card-subtitle'>" + searchButton("work", item.work) + " by " + searchButton("author", item.author); + "</p>";
     let series = "";
     let chars = characters(item.characters);
 
     // If series isn't NULL
     if (item.series) {
-        series = '<p class="card-subtitle">' + item.series + '</p>';
+        series = "<p class='card-subtitle'>" + searchButton("series", item.series) + "</p>";
     }
 
-    console.log(quote);
+    console.log(work);
     document.getElementById("quote-text").innerHTML = quote;
     document.getElementById("quote-work").innerHTML = work + series;
     document.getElementById("quote-chars").innerHTML = chars;
     document.getElementById("quote-close").innerHTML = " <button class=\"right close\" onclick=\"cleanBox()\"></button> <a href='edit.php?id=" + item.id + "'><button class=\"right edit\"></button></a>";
 }
 
+/* <p class="card-subtitle"><button class="link" onclick="setSearch(Death of a Pirate King)">Death of a Pirate King</button> by Josh Lanyon</p> */
+
 // LISTINGS
 
-function search(filter, search) {
+// Search from link
+function setSearch(filter, search) {
+    console.log(search);
+    console.log(filter);
+    document.getElementById("searchFilter").value = filter;
+    document.getElementById("searchField").value = search;
+    searchFunction(filter, search);
+}
+
+// Basic Search
+function searchFunction(filter, search) {
     cleanList();
 
     if (search == "" && filter !== "search" && filter !=="quote") {
@@ -162,7 +180,7 @@ async function listFilter(int, param, filter) {
     for (const x in array) {
         let obj = array[x];
         if (obj != null) {
-            list += "<tr class=\"align-baseline\"><td class=\"link\" onclick=\"setSearch('" + obj + "' ,'" + filter + "')\">" + obj + "</td></tr>";
+            list += "<tr class=\"align-baseline\"><td class=\"link\" onclick=\"setSearch('" + filter + "' ,'" + obj + "')\">" + obj + "</td></tr>";
         }
     }
 
@@ -271,7 +289,19 @@ function logQuote(str) {
     postJSON(str, data);
 }
 
-// Delete?
+// Delete Confirmation
+function deleteQuote() {
+    let alert = "Are you sure you want to delete this quote from the database?";
+    if (confirm(alert) == true) {
+
+        let url = window.location.href;
+        let urlArr = url.split("?id=");
+        let id = urlArr[1];
+        let data = {'id' : id} 
+
+        postJSON("delete", data);
+    }
+}
 
 // Post data to API
 async function postJSON(str, data) {
@@ -280,6 +310,8 @@ async function postJSON(str, data) {
         url = PATH + "insert.php";
     } else if (str == "edit") {
         url = PATH + "update.php";
+    } else if (str == "delete") {
+        url = PATH + "delete.php";
     }
     console.log(url);
     console.log(data);
@@ -301,7 +333,11 @@ async function postJSON(str, data) {
       console.log("Success:", result);
       if (result == 'Success') {
         console.log('desmi');
-        location.href = 'success.php';
+        if (str == "delete") {
+            location.href = 'delete-success.php';
+        } else {
+            location.href = 'success.php';
+        }
       }
     } catch (error) {
       console.error("Error:", error);
