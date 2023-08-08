@@ -1,13 +1,24 @@
 <?php
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Headers: *');
-    header('Content-Type: application/json; charset=utf-8');
+    // header('Content-Type: application/json; charset=utf-8');
     require_once('settings.php');
 
 // COLLECT AND CLEAN DATA
 
     // Takes raw data from the request
     $json = file_get_contents('php://input');
+
+    // $json = '{
+    //     "author" : 1,
+    //     "work" : 2,
+    //     "series" : 3,
+    //     "char1" : 4,
+    //     "char2" : "",
+    //     "quote" : 6,
+    //     "id" : 36
+    //     }';
+
     // If no data object, redirect to index page (no direct entry to address)
     if (!$json) {
         header('location:index.html');
@@ -36,30 +47,24 @@
 
 // BUILD SQL QUERY
 
-    // Optional insert to SQL query
-    function check($str) {
-        if ($str != "") {
-            return ",".$str;
-        } else {
-            return $str;
-        }
-    }
+    $cols = "";
+    $values = "";
 
-    // Optional value to SQL query
-    function pick($str) {
-        if ($str != "") {
-            return ",'".$str."'";
-        } else {
-            return $str;
-        }
+    if ($series !== "") {
+        $cols.=", series";
+        $values.=",'".$series."'";
     }
-
-    // Check if optional values are present and add them to SQL query
-    $inserts = check($series).check($char1).check($char2);
-    $values = pick($series).pick($char1).pick($char2);
+    if ($char1 !== "") {
+        $cols.=", char1";
+        $values.=",'".$char1."'";
+    }
+    if ($char2 !== "") {
+        $cols.=", char2";
+        $values.=",'".$char2."'";
+    }
 
     // Create INSERT query
-    $sql = "INSERT INTO quotes(author, work, quote".$inserts.") VALUES('".$author."','".$work."','".$quote."'".$values.")";
+    $sql = "INSERT INTO quotes(author, work, quote".$cols.") VALUES('".$author."','".$work."','".$quote."'".$values.")";
     $result = $conn->query($sql);
     
     //Check whether the query was successful or not

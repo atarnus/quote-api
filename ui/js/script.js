@@ -1,7 +1,7 @@
 // Server URL
 const PATH = "https://localhost/quote-api/";
 // Paging: results per page
-const PERPAGE = 3;
+const PERPAGE = 10;
 
 // CLEANING FUNCTIONS
 function cleanBox() {
@@ -43,14 +43,14 @@ function truncate(str, n) {
 
 // Function to replace newlines to spaces
 function lineToSpace(str) {
-    const search = '\r\n';
+    const search = '\n';
     const replaceWith = ' ';
     return str.split(search).join(replaceWith);
 }
 
 // Function to change lines to paragraphs
 function quoteToCard(str) {
-    const search = '\r\n';
+    const search = '\n';
     const replaceWith = '</p><p class="card-text">';
     return '</p><p class="card-text">' + str.split(search).join(replaceWith) + '</p>';
 }
@@ -100,7 +100,7 @@ async function singleQuote(url) {
 
     // If series isn't NULL
     if (item.series) {
-        series = "<p class='card-subtitle'>" + searchButton("series", item.series) + "</p>";
+        series = "<p class='card-subtitle'>" + searchButton("series", "(" + item.series + ")") + "</p>";
     }
 
     console.log(work);
@@ -110,7 +110,6 @@ async function singleQuote(url) {
     document.getElementById("quote-close").innerHTML = " <button class=\"right close\" onclick=\"cleanBox()\"></button> <a href='edit.php?id=" + item.id + "'><button class=\"right edit\"></button></a>";
 }
 
-/* <p class="card-subtitle"><button class="link" onclick="setSearch(Death of a Pirate King)">Death of a Pirate King</button> by Josh Lanyon</p> */
 
 // LISTINGS
 
@@ -261,7 +260,7 @@ async function listQuotes(int, param, search, filter) {
     if (list == "") {
         content = title + "<table><tr class=\"noborder\"><td>No results.</td></tr></table>";
     } else {
-        table = "<table><tr class=\"noborder\"><td colspan=\"3\">Results: " + item.total + "</td></tr><tr><th>ID</th><th>Quote</th><th>Author</th><th>Work</th><th>Series</th></tr>";
+        table = "<table><tr class=\"noborder\"><td colspan=\"3\">Results: " + item.total + "</td></tr><tr><th>ID</th><th>Quote</th><th>Author</th><th>Work</th><th>Series</th><th>Characters</th></tr>";
         content = title + table + list + "</table>" + buttons;
     }
     document.getElementById("quote-list").innerHTML = content;
@@ -269,7 +268,7 @@ async function listQuotes(int, param, search, filter) {
 
 // ADMIN
 
-// Add or Edit
+// Add, Edit, Delete
 function logQuote(str) {
 
     let url = window.location.href;
