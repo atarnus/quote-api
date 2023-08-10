@@ -100,10 +100,10 @@ async function singleQuote(url) {
 
     // If series isn't NULL
     if (item.series) {
-        series = "<p class='card-subtitle'>" + searchButton("series", "(" + item.series + ")") + "</p>";
+        series = "<p class='card-subtitle'><button class=\"link\" value=\"" + item.series + "\" onclick=\"setSearch('series', this.value)\">(" + item.series + ")</button></p>";
     }
 
-    console.log(work);
+    console.log(series);
     document.getElementById("quote-text").innerHTML = quote;
     document.getElementById("quote-work").innerHTML = work + series;
     document.getElementById("quote-chars").innerHTML = chars;
@@ -232,19 +232,24 @@ async function listQuotes(int, param, search, filter) {
 
     // BUTTONS
 
-    let buttons;
+    let buttons = "";
     let pages = Math.ceil(item.total / PERPAGE);
     let previous = int - 1;
     let next = int + 1;
 
-    if (int == 1) {
-        buttons = "<p class=\"center\"><button onclick=\"setPage(2,'" + filter + "', '" + search + "')\" type=\"button\">Next</button></p>"
-    } else if (int == pages) {
-        buttons = "<p class=\"center\"><button onclick=\"setPage(" + previous + ",'" + filter + "', '" + search + "')\" type=\"button\">Previous</button></p>"
-    } else {
-        buttons = "<p class=\"center\"><button onclick=\"setPage(" + previous + ",'" + filter + "', '" + search + "')\" type=\"button\">Previous</button> <button onclick=\"setPage(" + next + ", '" + filter + "', '" + search + "')\" type=\"button\">Next</button></p>"
+    if (item.total > PERPAGE) {
+
+        if (int == 1) {
+            buttons = "<p class=\"center\"><button onclick=\"setPage(2,'" + filter + "', '" + search + "')\" type=\"button\">Next</button></p>"
+        } else if (int == pages) {
+            buttons = "<p class=\"center\"><button onclick=\"setPage(" + previous + ",'" + filter + "', '" + search + "')\" type=\"button\">Previous</button></p>"
+        } else {
+            buttons = "<p class=\"center\"><button onclick=\"setPage(" + previous + ",'" + filter + "', '" + search + "')\" type=\"button\">Previous</button> <button onclick=\"setPage(" + next + ", '" + filter + "', '" + search + "')\" type=\"button\">Next</button></p>"
+        }
     }
 
+
+    // HEADLINE
     if (search == "" && filter == "search" || search == "" && filter == "quote") {
         title = "<h3>All Quotes</h3>";
     } else {
